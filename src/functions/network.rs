@@ -89,5 +89,7 @@ pub fn local_device_discovery() {
     .output()
     .expect("Failed to execute arp command").stdout;
 
-    println!("{}", String::from_utf8_lossy(&arp_table));
+    sout(&String::from_utf8_lossy(&arp_table));
+    sout("Done");
+    sout("")
 }
