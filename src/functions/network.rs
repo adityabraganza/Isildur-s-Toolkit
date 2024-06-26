@@ -1,5 +1,7 @@
 use std::process::Command;
 use std::process::Stdio;
+use std::thread;
+use core::time::Duration;
 
 use crate::functions::qol::sout;
 
@@ -82,6 +84,15 @@ pub fn local_device_discovery() {
                 .stdout(Stdio::null())
                 .output();
         }
+    }
+
+    thread::sleep(Duration::from_secs(2)); // Waits for the ARP table to update
+
+    for _i in 1..20{
+        let _ = Command::new("arp")
+        .arg("-e")
+        .output()
+        .expect("Failed to execute arp command").stdout;
     }
 
     let arp_table = Command::new("arp")

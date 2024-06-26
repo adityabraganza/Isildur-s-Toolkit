@@ -4,10 +4,10 @@ use std::io;
 use std::process::Command;
 
 mod functions;
-use crate::functions::{network, qol::sout};
+use crate::functions::{network, qol::{sout, clear}};
 
 fn main(){
-    _ = Command::new("clear").status();
+    clear();
 
     let mut should_continue = true;
 
@@ -29,6 +29,7 @@ fn main(){
                     invalid_command(user_input);
                 }
             },
+            "clear"|"clr" => clear(),
             "end"|"e" => {
                 sout("Exited program");
                 should_continue = false;
@@ -57,10 +58,15 @@ A command will only function if it does not have any children. If it does have c
 Where there is a '|' in a line there is a shorter alternative for the command that is accepted too. Ie. if the command is writen as 'network|net' then either 'network' or 'net' can be used to the same effect.
 
 Commands:
-help|h (prints this help message)
+
+help|h (Prints this help message)
+
 end|e (Exits the program)
+
+clear|clr (Clears the console)
+
 network|net
-    local_device_discovery|ldd (displays all devices on the local network based on IP Address and MAC Address)
+    local_device_discovery|ldd (Displays all devices on the local network based on IP Address and MAC Address)
                 ");
             },
             _ =>{invalid_command(user_input)}
