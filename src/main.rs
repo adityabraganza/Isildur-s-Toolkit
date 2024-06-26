@@ -4,13 +4,14 @@ use std::io;
 use std::process::Command;
 
 mod functions;
-use crate::functions::network::local_device_discovery;
+use crate::functions::{network, qol};
 
 fn main(){
+    _ = Command::new("clear").status();
+
     let mut should_continue = true;
 
     while should_continue{
-        _ = Command::new("clear").spawn();
         let user_input = get_input();
 
         match user_input[0].as_str(){
@@ -18,7 +19,7 @@ fn main(){
                 if user_input.len() > 1{
                     match user_input[1].as_str(){
                         "local_device_discovery"|"ldd" => {
-                            local_device_discovery();
+                            network::local_device_discovery();
                         },
                         _ => {
                             invalid_command(user_input);
@@ -29,11 +30,11 @@ fn main(){
                 }
             },
             "end"|"e" => {
-                sout("Quit program");
+                qol::sout("Exited program");
                 should_continue = false;
             },
             "help"|"h" => {
-                sout("
+                qol::sout("
 The format in which commands are written in the Commands section:
 
 parent_1
@@ -57,7 +58,7 @@ Where there is a '|' in a line there is a shorter alternative for the command th
 
 Commands:
 help|h (prints this help message)
-end|e (ends the program)
+end|e (Exits the program)
 network|net
     local_device_discovery|ldd (displays all devices on the local network based on IP Address and MAC Address)
                 ");
@@ -74,7 +75,7 @@ fn invalid_command(user_input: Vec<String>){
         command_string = format!("{} {}", command_string, &part);
     }
 
-    sout(&format!("Command '{}' not found. Use command 'help' or 'h' to get a list of commands.", command_string));
+    qol::sout(&format!("Command '{}' not found. Use command 'help' or 'h' to get a list of commands.", command_string));
 }
 
 fn get_input() -> Vec<String>{
@@ -89,8 +90,4 @@ fn get_input() -> Vec<String>{
     }
 
     return return_vector;
-}
-
-fn sout(s: &str){
-    println!("{}", s);
 }

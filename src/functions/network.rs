@@ -2,7 +2,13 @@ use std::process::Command;
 use std::process::Stdio;
 
 pub fn local_device_discovery() {
-    let host_ip_response = Command::new("ip")
+    let current_terminal_id = Command::new("id").arg("-u").output().expect("Error in identifying root").stdout;
+    if String::from_utf8_lossy(&current_terminal_id) != "0"{
+        println!("{}", String::from_utf8_lossy(&current_terminal_id));
+        return;
+    }
+
+    let host_ip_response = Command::new("id")
     .arg("-4")
     .arg("addr")
     .arg("show")
