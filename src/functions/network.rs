@@ -5,7 +5,7 @@ use crate::functions::qol::sout;
 
 pub fn local_device_discovery() {
     let current_terminal_id = Command::new("id").arg("-u").output().expect("Error in identifying root").stdout;
-    if String::from_utf8_lossy(&current_terminal_id) != "0"{
+    if String::from_utf8_lossy(&current_terminal_id).trim() != "0"{
         sout("Please restart the program with root privilages");
         return;
     }
