@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use std::io;
+use std::process::Command;
 
 mod functions;
 use crate::functions::network::local_device_discovery;
@@ -9,6 +10,7 @@ fn main(){
     let mut should_continue = true;
 
     while should_continue{
+        Command::new("clear");
         let user_input = get_input();
 
         match user_input[0].as_str(){
@@ -27,8 +29,7 @@ fn main(){
                 }
             },
             "end"|"e" => {
-                sout("");
-                sout("Quitting program");
+                sout("Quit program");
                 should_continue = false;
             },
             "help"|"h" => {
