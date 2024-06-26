@@ -4,7 +4,7 @@ use std::io;
 use std::process::Command;
 
 mod functions;
-use crate::functions::{network, qol};
+use crate::functions::{network, qol::sout};
 
 fn main(){
     _ = Command::new("clear").status();
@@ -30,11 +30,11 @@ fn main(){
                 }
             },
             "end"|"e" => {
-                qol::sout("Exited program");
+                sout("Exited program");
                 should_continue = false;
             },
             "help"|"h" => {
-                qol::sout("
+                sout("
 The format in which commands are written in the Commands section:
 
 parent_1
@@ -75,7 +75,7 @@ fn invalid_command(user_input: Vec<String>){
         command_string = format!("{} {}", command_string, &part);
     }
 
-    qol::sout(&format!("Command '{}' not found. Use command 'help' or 'h' to get a list of commands.", command_string));
+    sout(&format!("Command '{}' not found. Use command 'help' or 'h' to get a list of commands.", command_string));
 }
 
 fn get_input() -> Vec<String>{

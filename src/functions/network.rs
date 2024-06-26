@@ -1,10 +1,12 @@
 use std::process::Command;
 use std::process::Stdio;
 
+use crate::functions::qol::sout;
+
 pub fn local_device_discovery() {
     let current_terminal_id = Command::new("id").arg("-u").output().expect("Error in identifying root").stdout;
     if String::from_utf8_lossy(&current_terminal_id) != "0"{
-        println!("{}", String::from_utf8_lossy(&current_terminal_id));
+        sout("Please restart the program with root privilages");
         return;
     }
 
@@ -43,7 +45,7 @@ pub fn local_device_discovery() {
             .status();
     }
 
-    println!("Populating arp table");
+    sout("Populating arp table");
     let mut handles = Vec::new();
 
     for i in 1..=254 {
