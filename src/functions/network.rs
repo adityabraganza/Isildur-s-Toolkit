@@ -17,8 +17,8 @@ pub fn local_device_discovery() {
     .arg("-Po")
     .arg(r"'inet \K[\d.]+'")
     .output()
-    .expect("Failed to execute arp command");
-    let host_ip_address = String::from_utf8_lossy(&host_ip_response.stdout);
+    .expect("Failed to execute arp command").stdout;
+    let host_ip_address = String::from_utf8_lossy(&host_ip_response);
     let div_host_ip_address: Vec<&str> = host_ip_address.split(".").collect();
 
     let mut network_address: String = "192.168.1".to_string();
@@ -40,9 +40,11 @@ pub fn local_device_discovery() {
     }
 
     println!("Populating arp table");
+    let mut handles = Vec::new();
+
     for i in 1..=254 {
         let ip = format!("{}.{}", network_address, i);
-        let _ = Command::new("ping")
+        let handle = Command::new("ping")
             .arg("-c")
             .arg("1")
             .arg(&ip)
@@ -50,11 +52,13 @@ pub fn local_device_discovery() {
             .arg("-i")
             .arg("0.002")
             .stdout(Stdio::null())
-            .spawn();
+            .spawn()
+            .expect("Failed to spawn ping command");
+        handles.push(handle);
     }
 
-    for _ in 1..=254 {
-        thread::sleep(Duration::from_millis(4));
+    for mut handle in handles {
+        handle.wait().expect("Ping command failed");
     }
 
     println!("Cleaning arp table");
@@ -70,14 +74,14 @@ pub fn local_device_discovery() {
                 .arg("-d")
                 .arg(&ip)
                 .stdout(Stdio::null())
-                .status();
+                .output();
         }
     }
 
-    let _ = Command::new("arp")
-        .arg("-e")
-        .output()
-        .expect("Failed to execute arp command");
+    let arp_table = Command::new("arp")
+    .arg("-e")
+    .output()
+    .expect("Failed to execute arp command").stdout;
 
-    println!("Done");
+    println!("{}", String::from_utf8_lossy(&arp_table));
 }
