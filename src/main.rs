@@ -41,14 +41,19 @@ parent_1
             child_child_child_1 (explanation)
         child_child_2
     child_2
-paren
-While inputting the command you must go in descending order, from the parent command to the child command, with spaces in betwe
-A command will only function if it does not have any children. If it does have children it will say that the command was not found. All functions with no children will be followed by an explanation in brackets in the Commands section. In the above example format the only valid functions would 
+parent_2
+
+While inputting the command you must go in descending order, from the parent command to the child command, with spaces in between.
+
+A command will only function if it does not have any children. If it does have children it will say that the command was not found. All functions with no children will be followed by an explanation in brackets in the Commands section. In the above example format the only valid functions would be:
+
 1. parent_1 child_1 child_child_1 child_child_child_1
 2. parent_1 child_1 child_child_2
 3. parent_1 child_2
-4. paren
-Where there is a '|' in a line there is a shorter alternative for the command that is accepted too. Ie. if the command is writen as 'network|net' then either 'network' or 'net' can be used to the same effe
+4. parent_2
+
+Where there is a '|' in a line there is a shorter alternative for the command that is accepted too. Ie. if the command is writen as 'network|net' then either 'network' or 'net' can be used to the same effect.
+
 Commands:
 help|h (prints this help message)
 end|e (ends the program)
