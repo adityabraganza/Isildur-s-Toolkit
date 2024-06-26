@@ -1,46 +1,47 @@
-use std::io::{self, Write};
-use std::net::Ipv4Addr;
-use std::process::{Command, Stdio};
+use std::process::Command;
+use std::process::Stdio;
 use std::thread;
 use std::time::Duration;
 
-fn main() {
-    
-    
-    network = "192.168.1";
+pub fn local_device_discovery() {
+    let host_ip_response = Command::new("ip")
+    .arg("-4")
+    .arg("addr")
+    .arg("show")
+    .arg("|")
+    .arg("grep")
+    .arg("-v")
+    .arg("'inet 127.0.0.1'")
+    .arg("|")
+    .arg("grep")
+    .arg("-Po")
+    .arg(r"'inet \K[\d.]+'")
+    .output()
+    .expect("Failed to execute arp command");
+    let host_ip_address = String::from_utf8_lossy(&host_ip_response.stdout);
+    let div_host_ip_address: Vec<&str> = host_ip_address.split(".").collect();
 
-    // Check for removal all IPs in the arp table
-    let mut clean_arp_table = false;
-    loop {
-        print!("Clean arp table (y/n): ");
-        io::stdout().flush().unwrap();
+    let mut network_address: String = "192.168.1".to_string();
 
-        let mut response = String::new();
-        io::stdin().read_line(&mut response).expect("Failed to read input");
-        match response.trim().to_lowercase().as_str() {
-            "y" => {
-                clean_arp_table = true;
-                break;
-            }
-            "n" => break,
-            _ => println!("Invalid response. Please enter 'y' or 'n'."),
-        }
+    if div_host_ip_address.len() >= 3 {
+        network_address = format!("{}.{}.{}", div_host_ip_address[0], div_host_ip_address[1], div_host_ip_address[2]);
+    } else{
+        //ADD CODE FOR MANUAL INPUT
     }
 
     println!("Clearing arp table");
     for i in 1..=254 {
-        let ip = format!("{}.{}", network, i);
+        let ip = format!("{}.{}", network_address, i);
         let _ = Command::new("arp")
             .arg("-d")
             .arg(&ip)
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
             .status();
     }
 
     println!("Populating arp table");
     for i in 1..=254 {
-        let ip = format!("{}.{}", network, i);
+        let ip = format!("{}.{}", network_address, i);
         let _ = Command::new("ping")
             .arg("-c")
             .arg("1")
@@ -49,7 +50,6 @@ fn main() {
             .arg("-i")
             .arg("0.002")
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
             .spawn();
     }
 
@@ -59,7 +59,7 @@ fn main() {
 
     println!("Cleaning arp table");
     for i in 1..=254 {
-        let ip = format!("{}.{}", network, i);
+        let ip = format!("{}.{}", network_address, i);
         let output = Command::new("arp")
             .arg("-a")
             .arg(&ip)
@@ -70,7 +70,6 @@ fn main() {
                 .arg("-d")
                 .arg(&ip)
                 .stdout(Stdio::null())
-                .stderr(Stdio::null())
                 .status();
         }
     }
