@@ -1,7 +1,5 @@
 use std::process::Command;
 use std::process::Stdio;
-use std::thread;
-use std::time::Duration;
 
 pub fn local_device_discovery() {
     let host_ip_response = Command::new("ip")
