@@ -10,7 +10,7 @@ fn main(){
     let mut should_continue = true;
 
     while should_continue{
-        Command::new("clear");
+        _ = Command::new("clear").spawn();
         let user_input = get_input();
 
         match user_input[0].as_str(){
