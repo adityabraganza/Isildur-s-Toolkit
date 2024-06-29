@@ -4,7 +4,7 @@ use std::io;
 use std::process::Command;
 
 mod functions;
-use crate::functions::{network, qol::{sout, clear}};
+use crate::functions::{network::ldd, qol::{sout, clear}};
 
 fn main(){
     clear();
@@ -19,7 +19,7 @@ fn main(){
                 if user_input.len() > 1{
                     match user_input[1].as_str(){
                         "local_device_discovery"|"ldd" => {
-                            network::local_device_discovery();
+                            ldd::local_device_discovery();
                         },
                         _ => {
                             invalid_command(user_input);
